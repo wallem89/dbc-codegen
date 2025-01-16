@@ -22,7 +22,7 @@ use defmt::Format;
 use embedded_can::{ExtendedId, Id, StandardId};
 
 /// All messages
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, defmt::Format)]
 pub enum Messages {
     /// Foo
     Foo(Foo),
@@ -270,6 +270,17 @@ impl core::fmt::Debug for Foo {
         } else {
             f.debug_tuple("Foo").field(&self.raw).finish()
         }
+    }
+}
+
+impl defmt::Format for Foo {
+    fn format(&self, f: defmt::Formatter) {
+        defmt::write!(
+            f,
+            "Foo {{ Voltage={:?} Current={:?} }}",
+            self.voltage(),
+            self.current(),
+        );
     }
 }
 
@@ -623,6 +634,20 @@ impl core::fmt::Debug for Bar {
     }
 }
 
+impl defmt::Format for Bar {
+    fn format(&self, f: defmt::Formatter) {
+        defmt::write!(
+            f,
+            "Bar {{ One={:?} Two={:?} Three={:?} Four={:?} Type={:?} }}",
+            self.one(),
+            self.two(),
+            self.three(),
+            self.four(),
+            self.xtype(),
+        );
+    }
+}
+
 #[cfg(feature = "arb")]
 impl<'a> Arbitrary<'a> for Bar {
     fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self, arbitrary::Error> {
@@ -838,6 +863,12 @@ impl core::fmt::Debug for X4wd {
         } else {
             f.debug_tuple("X4wd").field(&self.raw).finish()
         }
+    }
+}
+
+impl defmt::Format for X4wd {
+    fn format(&self, f: defmt::Formatter) {
+        defmt::write!(f, "X4wd {{ _4DRIVE={:?} }}", self.x4drive(),);
     }
 }
 
@@ -1189,6 +1220,20 @@ impl core::fmt::Debug for Amet {
     }
 }
 
+impl defmt::Format for Amet {
+    fn format(&self, f: defmt::Formatter) {
+        defmt::write!(
+            f,
+            "Amet {{ One={:?} Two={:?} Three={:?} Four={:?} Five={:?} }}",
+            self.one(),
+            self.two(),
+            self.three(),
+            self.four(),
+            self.five(),
+        );
+    }
+}
+
 #[cfg(feature = "arb")]
 impl<'a> Arbitrary<'a> for Amet {
     fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self, arbitrary::Error> {
@@ -1340,6 +1385,12 @@ impl core::fmt::Debug for Dolor {
         } else {
             f.debug_tuple("Dolor").field(&self.raw).finish()
         }
+    }
+}
+
+impl defmt::Format for Dolor {
+    fn format(&self, f: defmt::Formatter) {
+        defmt::write!(f, "Dolor {{ OneFloat={:?} }}", self.one_float(),);
     }
 }
 
@@ -1581,6 +1632,16 @@ impl core::fmt::Debug for MultiplexTest {
         } else {
             f.debug_tuple("MultiplexTest").field(&self.raw).finish()
         }
+    }
+}
+
+impl defmt::Format for MultiplexTest {
+    fn format(&self, f: defmt::Formatter) {
+        defmt::write!(
+            f,
+            "MultiplexTest {{ UnmultiplexedSignal={:?} }}",
+            self.unmultiplexed_signal(),
+        );
     }
 }
 
@@ -2140,6 +2201,19 @@ impl core::fmt::Debug for IntegerFactorOffset {
     }
 }
 
+impl defmt::Format for IntegerFactorOffset {
+    fn format(&self, f: defmt::Formatter) {
+        defmt::write!(f,
+            "IntegerFactorOffset {{ ByteWithOffset={:?} ByteWithFactor={:?} ByteWithBoth={:?} ByteWithNegativeOffset={:?} ByteWithNegativeMin={:?} }}",
+            self.byte_with_offset(),
+            self.byte_with_factor(),
+            self.byte_with_both(),
+            self.byte_with_negative_offset(),
+            self.byte_with_negative_min(),
+            );
+    }
+}
+
 #[cfg(feature = "arb")]
 impl<'a> Arbitrary<'a> for IntegerFactorOffset {
     fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self, arbitrary::Error> {
@@ -2355,6 +2429,17 @@ impl core::fmt::Debug for NegativeFactorTest {
     }
 }
 
+impl defmt::Format for NegativeFactorTest {
+    fn format(&self, f: defmt::Formatter) {
+        defmt::write!(
+            f,
+            "NegativeFactorTest {{ UnsignedNegativeFactorSignal={:?} WidthMoreThanMinMax={:?} }}",
+            self.unsigned_negative_factor_signal(),
+            self.width_more_than_min_max(),
+        );
+    }
+}
+
 #[cfg(feature = "arb")]
 impl<'a> Arbitrary<'a> for NegativeFactorTest {
     fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self, arbitrary::Error> {
@@ -2562,6 +2647,17 @@ impl core::fmt::Debug for LargerIntsWithOffsets {
     }
 }
 
+impl defmt::Format for LargerIntsWithOffsets {
+    fn format(&self, f: defmt::Formatter) {
+        defmt::write!(
+            f,
+            "LargerIntsWithOffsets {{ Twelve={:?} Sixteen={:?} }}",
+            self.twelve(),
+            self.sixteen(),
+        );
+    }
+}
+
 #[cfg(feature = "arb")]
 impl<'a> Arbitrary<'a> for LargerIntsWithOffsets {
     fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self, arbitrary::Error> {
@@ -2654,6 +2750,12 @@ impl core::fmt::Debug for MsgWithoutSignals {
         } else {
             f.debug_tuple("MsgWithoutSignals").field(&self.raw).finish()
         }
+    }
+}
+
+impl defmt::Format for MsgWithoutSignals {
+    fn format(&self, f: defmt::Formatter) {
+        defmt::write!(f, "MsgWithoutSignals {{ }}",);
     }
 }
 
@@ -2800,6 +2902,12 @@ impl core::fmt::Debug for TruncatedBeSignal {
         } else {
             f.debug_tuple("TruncatedBeSignal").field(&self.raw).finish()
         }
+    }
+}
+
+impl defmt::Format for TruncatedBeSignal {
+    fn format(&self, f: defmt::Formatter) {
+        defmt::write!(f, "TruncatedBeSignal {{ Foo={:?} }}", self.foo(),);
     }
 }
 
@@ -2950,6 +3058,12 @@ impl core::fmt::Debug for TruncatedLeSignal {
     }
 }
 
+impl defmt::Format for TruncatedLeSignal {
+    fn format(&self, f: defmt::Formatter) {
+        defmt::write!(f, "TruncatedLeSignal {{ Foo={:?} }}", self.foo(),);
+    }
+}
+
 #[cfg(feature = "arb")]
 impl<'a> Arbitrary<'a> for TruncatedLeSignal {
     fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self, arbitrary::Error> {
@@ -3092,6 +3206,12 @@ impl core::fmt::Debug for MsgExtendedId {
         } else {
             f.debug_tuple("MsgExtendedId").field(&self.raw).finish()
         }
+    }
+}
+
+impl defmt::Format for MsgExtendedId {
+    fn format(&self, f: defmt::Formatter) {
+        defmt::write!(f, "MsgExtendedId {{ Dummy={:?} }}", self.dummy(),);
     }
 }
 
